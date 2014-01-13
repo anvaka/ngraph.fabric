@@ -1,0 +1,21 @@
+{
+  "name": "ngraph.fabric",
+  "version": "0.0.0",
+  "description": "Fabric.js graph renderer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ngraph",
+    "graph",
+    "rendering",
+    "fabric"
+  ],
+  "author": "Andrei Kashcha",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anvaka/ngraph.fabric"
+  }
+}
