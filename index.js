@@ -69,6 +69,13 @@ module.exports = function (graph, settings){
      */
     resetTransform: function () {
       graphics.setTransform(canvas.width/2, canvas.height/2, 1);
+    },
+
+    /**
+     * Gets UI object for a given node id
+     */
+    getNodeUI : function (nodeId) {
+      return nodeUI[nodeId];
     }
   };
 
