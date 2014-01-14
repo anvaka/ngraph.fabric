@@ -147,7 +147,8 @@ module.exports = function (graph, settings){
   }
 
   function listenToInputEvents(container) {
-    var domEvents = require('./lib/domEvents')(container);
+    var domEvents = require('./lib/domEvents')(container),
+        getNodeAt = require('./lib/spatialIndex')(graph, nodeUI);
 
     domEvents.on('wheel', handleMouseWheel)
       .on('mousedown', handleMouseDown)
@@ -155,27 +156,40 @@ module.exports = function (graph, settings){
       .on('mousemove', handleMouseMove);
 
     var isDragging = false,
-        prevX, prevY;
+        prevX, prevY,
+        nodeUnderCursor;
 
     function handleMouseDown(e) {
       isDragging = true;
       prevX = e.clientX;
       prevY = e.clientY;
+
+      var pos = getLocalPosition(e.clientX, e.clientY);
+      nodeUnderCursor = getNodeAt(pos.x, pos.y);
+      if (nodeUnderCursor) {
+        layout.pinNode(nodeUnderCursor, true);
+      }
     }
 
     function handleMouseUp(e) {
       isDragging = false;
+      if (nodeUnderCursor) layout.pinNode(nodeUnderCursor, false);
+      nodeUnderCursor = null;
     }
 
     function handleMouseMove(e) {
       if (!isDragging) return;
 
-      var offsetX = (e.clientX - prevX);
-      var offsetY = (e.clientY - prevY);
-      graphics.setTransform(dx + offsetX, dy + offsetY, scale);
-
-      prevX = e.clientX;
-      prevY = e.clientY;
+      if (nodeUnderCursor) {
+        var pos = getLocalPosition(e.clientX, e.clientY);
+        layout.setNodePosition(nodeUnderCursor.id, pos.x, pos.y);
+      } else {
+        var offsetX = (e.clientX - prevX);
+        var offsetY = (e.clientY - prevY);
+        graphics.setTransform(dx + offsetX, dy + offsetY, scale);
+        prevX = e.clientX;
+        prevY = e.clientY;
+      }
     }
   }
 
@@ -196,6 +210,7 @@ module.exports = function (graph, settings){
     if (scaleLevel === undefined) {
       scaleLevel = scale; // use current scale then;
     }
+
     return {
       x: (x - dx) / scaleLevel,
       y: (y - dy) / scaleLevel
