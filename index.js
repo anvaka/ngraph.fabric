@@ -149,18 +149,47 @@ module.exports = function (graph, settings){
   function listenToInputEvents(container) {
     var domEvents = require('./lib/domEvents')(container);
 
-    domEvents.on('wheel', function(e) {
-      var isZoomIn = e.deltaY < 0;
-      var direction = isZoomIn ? 1 : -1;
-      var factor = (1 + direction * 0.1);
-      var mousePos = {
-        x: e.clientX,
-        y: e.clientY
-      };
+    domEvents.on('wheel', handleMouseWheel)
+      .on('mousedown', handleMouseDown)
+      .on('mouseup', handleMouseUp)
+      .on('mousemove', handleMouseMove);
 
-      var before = getLocalPosition(mousePos.x, mousePos.y, scale);
-      graphics.zoom(before.x, before.y, scale * factor);
-    });
+    var isDragging = false,
+        prevX, prevY;
+
+    function handleMouseDown(e) {
+      isDragging = true;
+      prevX = e.clientX;
+      prevY = e.clientY;
+    }
+
+    function handleMouseUp(e) {
+      isDragging = false;
+    }
+
+    function handleMouseMove(e) {
+      if (!isDragging) return;
+
+      var offsetX = (e.clientX - prevX);
+      var offsetY = (e.clientY - prevY);
+      graphics.setTransform(dx + offsetX, dy + offsetY, scale);
+
+      prevX = e.clientX;
+      prevY = e.clientY;
+    }
+  }
+
+  function handleMouseWheel(e) {
+    var isZoomIn = e.deltaY < 0;
+    var direction = isZoomIn ? 1 : -1;
+    var factor = (1 + direction * 0.1);
+    var mousePos = {
+      x: e.clientX,
+      y: e.clientY
+    };
+
+    var before = getLocalPosition(mousePos.x, mousePos.y, scale);
+    graphics.zoom(before.x, before.y, scale * factor);
   }
 
   function getLocalPosition(x, y, scaleLevel) {
