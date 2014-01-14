@@ -2,11 +2,11 @@
 //
 // > npm start
 //
-// Then open ./example/index.html
+// Then open ./example/basic/index.html
 //
 module.exports.main = function () {
   var graph = require('ngraph.generators').grid(10, 10);
-  var createFabric = require('../');
+  var createFabric = require('../../');
   var fabricGraphics = createFabric(graph);
 
   // begin animation loop:

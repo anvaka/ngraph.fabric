@@ -1,3 +1,4 @@
+// This simple file will render graph into an image
   var graph = require('ngraph.generators').grid(40, 40);
   var createFabric = require('../');
   var size = 1280;
