@@ -72,6 +72,9 @@ module.exports = function (graph, settings){
     }
   };
 
+  // teach graphics object to fire events
+  require('ngraph.events')(graphics);
+
   // Make sure everything is initialized before returning API:
   initialize();
 
@@ -157,7 +160,7 @@ module.exports = function (graph, settings){
 
     var isDragging = false,
         prevX, prevY,
-        nodeUnderCursor;
+        lastOver, nodeUnderCursor;
 
     function handleMouseDown(e) {
       isDragging = true;
@@ -168,22 +171,38 @@ module.exports = function (graph, settings){
       nodeUnderCursor = getNodeAt(pos.x, pos.y);
       if (nodeUnderCursor) {
         layout.pinNode(nodeUnderCursor, true);
+        graphics.fire('mouseDownNode', nodeUnderCursor);
       }
     }
 
     function handleMouseUp(e) {
       isDragging = false;
-      if (nodeUnderCursor) layout.pinNode(nodeUnderCursor, false);
+      if (nodeUnderCursor) {
+        layout.pinNode(nodeUnderCursor, false);
+        graphics.fire('mouseUpNode', nodeUnderCursor);
+      }
       nodeUnderCursor = null;
     }
 
     function handleMouseMove(e) {
-      if (!isDragging) return;
+      var pos = getLocalPosition(e.clientX, e.clientY);
+      if (!isDragging) {
+        var node  = getNodeAt(pos.x, pos.y);
+        if (lastOver && lastOver != node) {
+          graphics.fire('mouseLeaveNode', lastOver);
+          lastOver = node;
+          if (node) graphics.fire('mouseOverNode', node);
+        } else if (node && !lastOver) {
+          lastOver = node;
+          graphics.fire('mouseOverNode', node);
+        }
+        return;
+      }
 
       if (nodeUnderCursor) {
-        var pos = getLocalPosition(e.clientX, e.clientY);
         layout.setNodePosition(nodeUnderCursor.id, pos.x, pos.y);
       } else {
+        if (node) graphics.fire('mouseovernode', node);
         var offsetX = (e.clientX - prevX);
         var offsetY = (e.clientY - prevY);
         graphics.setTransform(dx + offsetX, dy + offsetY, scale);
