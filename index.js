@@ -153,7 +153,10 @@ module.exports = function (graph, settings){
       var isZoomIn = e.deltaY < 0;
       var direction = isZoomIn ? 1 : -1;
       var factor = (1 + direction * 0.1);
-      var mousePos = canvas.getPointer(e)
+      var mousePos = {
+        x: e.clientX,
+        y: e.clientY
+      };
 
       var before = getLocalPosition(mousePos.x, mousePos.y, scale);
       graphics.zoom(before.x, before.y, scale * factor);
