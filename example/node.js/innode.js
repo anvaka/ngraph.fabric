@@ -18,6 +18,13 @@
     layout: layout
   });
 
+  var fabric = require('fabric').fabric;
+  fabricGraphics.createNodeUI(function (node) {
+    return new fabric.Circle({ radius: Math.random() * 20, fill: 'gray' });
+  }).renderNode(function (circle) {
+    circle.left = circle.pos.x - circle.radius;
+    circle.top = circle.pos.y - circle.radius;
+  });
   var scale = 1;
 
   fabricGraphics.setTransform(size/2, size/2, scale);

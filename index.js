@@ -30,6 +30,7 @@ module.exports = function (graph, settings){
   var nodeUIBuilder, nodeRenderer, linkUIBuilder, linkRenderer;
 
   var nodeUI, linkUI; // Storage for UI of nodes/links
+  var getNodeAt; // node lookup by cooridnates
 
   // Public API:
   var graphics = {
@@ -112,6 +113,7 @@ module.exports = function (graph, settings){
     createNodeUI : function (createNodeUICallback) {
       nodeUI = {};
       nodeUIBuilder = createNodeUICallback;
+      getNodeAt = require('./lib/spatialIndex')(graph, nodeUI);
       rebuildUI();
       return this;
     },
@@ -201,11 +203,12 @@ module.exports = function (graph, settings){
     linkRenderer  = defaults.linkRenderer;
     nodeUI = {}, linkUI = {}; // Storage for UI of nodes/links
 
+    getNodeAt = require('./lib/spatialIndex')(graph, nodeUI);
+
     graph.forEachLink(initLink);
     graph.forEachNode(initNode);
 
     graphics.resetTransform();
-
     listenToInputEvents(domContainer);
   }
 
@@ -269,8 +272,7 @@ module.exports = function (graph, settings){
   }
 
   function listenToInputEvents(container) {
-    var domEvents = require('./lib/domEvents')(container),
-        getNodeAt = require('./lib/spatialIndex')(graph, nodeUI);
+    var domEvents = require('./lib/domEvents')(container);
 
     domEvents.on('wheel', handleMouseWheel)
       .on('mousedown', handleMouseDown)
