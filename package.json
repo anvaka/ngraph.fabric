@@ -30,7 +30,8 @@
   },
   "devDependencies": {
     "browserify": "~3.20.0",
-    "ngraph.generators": "0.0.2"
+    "ngraph.generators": "0.0.2",
+    "ngraph.graph": "0.0.2"
   },
   "browser": {
     "fabric": false,
