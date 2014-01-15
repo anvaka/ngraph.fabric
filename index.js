@@ -208,6 +208,8 @@ module.exports = function (graph, settings){
     graph.forEachLink(initLink);
     graph.forEachNode(initNode);
 
+    graph.on('changed', onGraphChanged);
+
     graphics.resetTransform();
     listenToInputEvents(domContainer);
   }
@@ -261,7 +263,7 @@ module.exports = function (graph, settings){
     ui.to = layout.getNodePosition(link.toId);
 
     linkUI[link.id] = ui;
-    canvas.add(ui);
+    canvas.insertAt(ui, 0);
   }
 
   function rebuildUI() {
@@ -364,5 +366,30 @@ module.exports = function (graph, settings){
     // otherwise let's create a default force directed layout:
     var physics = require('ngraph.physics.simulator');
     return require('ngraph.forcelayout')(graph, physics(settings.physics));
+  }
+
+  function onGraphChanged(changes) {
+    for (var i = 0; i < changes.length; ++i) {
+      var change = changes[i];
+      if (change.changeType === 'add') {
+        if (change.node) {
+          initNode(change.node);
+        }
+        if (change.link) {
+          initLink(change.link);
+        }
+      } else if (change.changeType === 'remove') {
+        if (change.node) {
+          var node = nodeUI[change.node.id];
+          if (node) { canvas.remove(node); }
+          delete nodeUI[change.node.id];
+        }
+        if (change.link) {
+          var link = linkUI[change.link.id];
+          if (link) canvas.remove(link);
+          delete linkUI[change.link.id];
+        }
+      }
+    }
   }
 }
