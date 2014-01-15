@@ -1,20 +1,114 @@
 !function(e){if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.ngraph=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-// this is just a demo. To run it execute from the root of repository:
-//
-// > npm start
-//
-// Then open ./example/basic/index.html
-//
-module.exports.main = function () {
-  var graph = require('ngraph.generators').grid(10, 10);
-  var createFabric = require('../../');
-  var fabricGraphics = createFabric(graph);
+module.exports.animate = function (graph) {
+  beginAddNodesLoop(graph);
+}
 
-  // begin animation loop:
+function beginRemoveNodesLoop(graph){
+  var nodesLeft = [];
+  graph.forEachNode(function(node){
+   nodesLeft.push(node.id);
+  });
+
+  var removeInterval = setInterval(function(){
+    var nodesCount = nodesLeft.length;
+
+    if (nodesCount > 0) {
+      var nodeToRemove = Math.min((Math.random() * nodesCount) << 0, nodesCount - 1);
+
+      graph.removeNode(nodesLeft[nodeToRemove]);
+      nodesLeft.splice(nodeToRemove, 1);
+    }
+
+    if (nodesCount === 0) {
+      clearInterval(removeInterval);
+      setTimeout(function(){
+        beginAddNodesLoop(graph);
+      }, 100);
+    }
+  }, 100);
+}
+
+function beginAddNodesLoop(graph){
+  var i = 0, m = 10, n = 40;
+  var addInterval = setInterval(function(){
+    graph.beginUpdate();
+
+    for (var j = 0; j < m; ++j){
+      var node = i + j * n;
+      if (i > 0) { graph.addLink(node, i - 1 + j * n); }
+      if (j > 0) { graph.addLink(node, i + (j - 1) * n); }
+    }
+    i++;
+    graph.endUpdate();
+
+    if (i >= n) {
+      clearInterval(addInterval);
+      setTimeout(function() {
+          beginRemoveNodesLoop(graph);
+      }, 10000);
+    }
+  }, 100);
+}
+
+},{}],2:[function(require,module,exports){
+module.exports.main = function () {
+  var graph = require('ngraph.graph')();
+  var fabricGraphics = require('../../')(graph);
+
+  require('./setCustomUI')(fabricGraphics);
+
+  // begin graph modification (add/remove nodes):
+  var graphChange = require('./animateGraph');
+  graphChange.animate(graph);
+
+  // begin rendering loop:
   fabricGraphics.run();
 }
 
-},{"../../":2,"ngraph.generators":15}],2:[function(require,module,exports){
+},{"../../":4,"./animateGraph":1,"./setCustomUI":3,"ngraph.graph":17}],3:[function(require,module,exports){
+module.exports = function (fabricGraphics) {
+  var fabric = typeof window === 'undefined' ? require('fabric').fabric : window.fabric;
+
+  fabricGraphics.createNodeUI(function (node) {
+    return new fabric.Circle({ radius: Math.random() * 20, fill: getNiceColor() });
+  }).renderNode(function (circle) {
+    circle.left = circle.pos.x - circle.radius;
+    circle.top = circle.pos.y - circle.radius;
+  }).createLinkUI(function (link) {
+    // lines in fabric are odd... Maybe I don't understand them.
+    return new fabric.Line([0, 0, 0, 0], {
+      stroke: getNiceColor(),
+      originX: 'center',
+      originY: 'center'
+    });
+  }).renderLink(function (line) {
+    line.set({
+      x1: line.from.x,
+      y1: line.from.y,
+      x2: line.to.x,
+      y2: line.to.y
+    });
+  });
+};
+
+var niceColors = [
+ '#1f77b4', '#aec7e8',
+ '#ff7f0e', '#ffbb78',
+ '#2ca02c', '#98df8a',
+ '#d62728', '#ff9896',
+ '#9467bd', '#c5b0d5',
+ '#8c564b', '#c49c94',
+ '#e377c2', '#f7b6d2',
+ '#7f7f7f', '#c7c7c7',
+ '#bcbd22', '#dbdb8d',
+ '#17becf', '#9edae5'
+];
+
+function getNiceColor() {
+  return niceColors[(Math.random() * niceColors.length)|0];
+}
+
+},{"fabric":12}],4:[function(require,module,exports){
 module.exports = function (graph, settings){
   var merge = require('ngraph.merge');
   var fabric = require('./lib/fabric');
@@ -411,7 +505,7 @@ module.exports = function (graph, settings){
   }
 }
 
-},{"./lib/createCanvas":3,"./lib/createContainer":4,"./lib/defaults":5,"./lib/domEvents":6,"./lib/fabric":7,"./lib/spatialIndex":9,"ngraph.events":11,"ngraph.forcelayout":12,"ngraph.merge":17,"ngraph.physics.simulator":18}],3:[function(require,module,exports){
+},{"./lib/createCanvas":5,"./lib/createContainer":6,"./lib/defaults":7,"./lib/domEvents":8,"./lib/fabric":9,"./lib/spatialIndex":11,"ngraph.events":13,"ngraph.forcelayout":14,"ngraph.merge":18,"ngraph.physics.simulator":19}],5:[function(require,module,exports){
 module.exports = createCanvas;
 
 function createCanvas(settings, domContainer) {
@@ -474,7 +568,7 @@ function createNodeCanvas (settings) {
    return fabricCanvas;
 }
 
-},{"./fabric":7,"canvas":10}],4:[function(require,module,exports){
+},{"./fabric":9,"canvas":12}],6:[function(require,module,exports){
 module.exports = function (settings) {
   // otherwise let's create a canvas and add it to the dom:
   if (typeof document !== 'undefined') {
@@ -483,7 +577,7 @@ module.exports = function (settings) {
 }
 
 
-},{}],5:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 /**
  * This module provides default settings for fabric graphics. There are a lot
  * of possible configuration paramters, and this file provides reasonable defaults
@@ -542,7 +636,7 @@ function linkRenderer(link) {
   link.y2 = link.to.y;
 }
 
-},{"./fabric":7,"./simpleLine":8}],6:[function(require,module,exports){
+},{"./fabric":9,"./simpleLine":10}],8:[function(require,module,exports){
 module.exports = function(domContainer) {
   var events = require('ngraph.events'),
       emitter = events({});
@@ -577,10 +671,10 @@ module.exports = function(domContainer) {
   }
 }
 
-},{"ngraph.events":11,"wheel":29}],7:[function(require,module,exports){
+},{"ngraph.events":13,"wheel":30}],9:[function(require,module,exports){
 module.exports = typeof window === 'undefined' ? require('fabric').fabric : window.fabric;
 
-},{"fabric":10}],8:[function(require,module,exports){
+},{"fabric":12}],10:[function(require,module,exports){
 var fabric = require('./fabric');
 
 module.exports = fabric.util.createClass(fabric.Object, {
@@ -640,7 +734,7 @@ module.exports = fabric.util.createClass(fabric.Object, {
     }
   });
 
-},{"./fabric":7}],9:[function(require,module,exports){
+},{"./fabric":9}],11:[function(require,module,exports){
 module.exports = function spatialIndex(graph, nodeUI) {
   var TOLERANCE = 10;
 
@@ -665,9 +759,9 @@ module.exports = function spatialIndex(graph, nodeUI) {
   }
 };
 
-},{}],10:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 
-},{}],11:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 module.exports = function(subject) {
   validateSubject(subject);
 
@@ -754,7 +848,7 @@ function validateSubject(subject) {
   }
 }
 
-},{}],12:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 module.exports = createLayout;
 
 // Maximum movement of the system at which system should be considered as stable
@@ -1085,7 +1179,7 @@ function createLayout(graph, physicsSimulator) {
   }
 }
 
-},{"ngraph.physics.primitives":13,"ngraph.physics.simulator":18,"ngraph.random":14}],13:[function(require,module,exports){
+},{"ngraph.physics.primitives":15,"ngraph.physics.simulator":19,"ngraph.random":16}],15:[function(require,module,exports){
 module.exports = {
   Body: Body,
   Vector2d: Vector2d
@@ -1104,7 +1198,7 @@ function Vector2d(x, y) {
   this.y = typeof y === 'number' ? y : 0;
 }
 
-},{}],14:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 module.exports = {
   random: random,
   randomIterator: randomIterator
@@ -1191,214 +1285,7 @@ function randomIterator(array, customRandom) {
     };
 }
 
-},{}],15:[function(require,module,exports){
-module.exports = {
-  ladder: ladder,
-  complete: complete,
-  completeBipartite: completeBipartite,
-  balancedBinTree: balancedBinTree,
-  path: path,
-  circularLadder: circularLadder,
-  grid: grid,
-  noLinks: noLinks
-};
-
-var createGraph = require('ngraph.graph');
-
-/**
- * Ladder graph is a graph in form of ladder
- * @param n {Number} Represents number of steps in the ladder
- */
-function ladder(n) {
-  if (!n || n < 0) {
-    throw new Error("Invalid number of nodes");
-  }
-
-  var g = createGraph(),
-      i;
-
-  for (i = 0; i < n - 1; ++i) {
-    g.addLink(i, i + 1);
-    // first row
-    g.addLink(n + i, n + i + 1);
-    // second row
-    g.addLink(i, n + i);
-    // ladder's step
-  }
-
-  g.addLink(n - 1, 2 * n - 1);
-  // last step in the ladder;
-
-  return g;
-}
-
-/**
- * Generates a graph in a form of a circular ladder with n steps.
- *
- * @param n {Number} of steps in the ladder.
- */
-function circularLadder(n) {
-    if (!n || n < 0) {
-        throw new Error("Invalid number of nodes");
-    }
-
-    var g = ladder(n);
-
-    g.addLink(0, n - 1);
-    g.addLink(n, 2 * n - 1);
-    return g;
-}
-
-/**
- * Generates complete graph Kn.
- *
- * @param n {Number}  represents number of nodes in the complete graph.
- */
-function complete(n) {
-  if (!n || n < 1) {
-    throw new Error("At least two nodes are expected for complete graph");
-  }
-
-  var g = createGraph(),
-      i,
-      j;
-
-  for (i = 0; i < n; ++i) {
-    for (j = i + 1; j < n; ++j) {
-      if (i !== j) {
-        g.addLink(i, j);
-        g.addLink(j, i);
-      }
-    }
-  }
-
-  return g;
-}
-
-/**
- * Generates complete bipartite graph K n,m. Each node in the
- * first partition is connected to all nodes in the second partition.
- *
- * @param n {Number} represents number of nodes in the first graph partition
- * @param m {Number} represents number of nodes in the second graph partition
- */
-function completeBipartite (n, m) {
-  if (!n || !m || n < 0 || m < 0) {
-    throw new Error("Graph dimensions are invalid. Number of nodes in each partition should be greate than 0");
-  }
-
-  var g = createGraph(),
-      i, j;
-
-  for (i = 0; i < n; ++i) {
-    for (j = n; j < n + m; ++j) {
-      g.addLink(i, j);
-    }
-  }
-
-  return g;
-}
-
-/**
- * Generates a path-graph with n steps.
- *
- * @param n {Number} number of nodes in the path
- */
-function path(n) {
-  if (!n || n < 0) {
-    throw new Error("Invalid number of nodes");
-  }
-
-  var g = createGraph(),
-      i;
-
-  g.addNode(0);
-
-  for (i = 1; i < n; ++i) {
-    g.addLink(i - 1, i);
-  }
-
-  return g;
-}
-
-
-/**
- * Generates a graph in a form of a grid with n rows and m columns.
- *
- * @param n {Number} of rows in the graph.
- * @param m {Number} of columns in the graph.
- */
-function grid(n, m) {
-  if (n < 1 || m < 1) {
-    throw new Error("Invalid number of nodes in grid graph");
-  }
-  var g = createGraph(),
-      i,
-      j;
-  if (n === 1 && m === 1) {
-    g.addNode(0);
-    return g;
-  }
-
-  for (i = 0; i < n; ++i) {
-    for (j = 0; j < m; ++j) {
-      var node = i + j * n;
-      if (i > 0) { g.addLink(node, i - 1 + j * n); }
-      if (j > 0) { g.addLink(node, i + (j - 1) * n); }
-    }
-  }
-
-  return g;
-}
-
-/**
- * Creates balanced binary tree with n levels.
- *
- * @param n {Number} of levels in the binary tree
- */
-function balancedBinTree(n) {
-  if (n < 0) {
-    throw new Error("Invalid number of nodes in balanced tree");
-  }
-  var g = createGraph(),
-      count = Math.pow(2, n),
-      level;
-
-  if (n === 0) {
-    g.addNode(1);
-  }
-
-  for (level = 1; level < count; ++level) {
-    var root = level,
-      left = root * 2,
-      right = root * 2 + 1;
-
-    g.addLink(root, left);
-    g.addLink(root, right);
-  }
-
-  return g;
-}
-
-/**
- * Creates graph with no links
- *
- * @param n {Number} of nodes in the graph
- */
-function noLinks(n) {
-  if (n < 0) {
-    throw new Error("Number of nodes shoul be >= 0");
-  }
-
-  var g = createGraph(), i;
-  for (i = 0; i < n; ++i) {
-    g.addNode(i);
-  }
-
-  return g;
-}
-
-},{"ngraph.graph":16}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 /**
  * @fileOverview Contains definition of the core graph object.
  */
@@ -1819,7 +1706,7 @@ function Link(fromId, toId, data, id) {
     this.id = id;
 }
 
-},{"ngraph.events":11}],17:[function(require,module,exports){
+},{"ngraph.events":13}],18:[function(require,module,exports){
 module.exports = merge;
 
 /**
@@ -1852,7 +1739,7 @@ function merge(target, options) {
   return target;
 }
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 /**
  * Manages a simulation of physical forces acting on bodies and springs.
  */
@@ -2053,7 +1940,7 @@ function physicsSimulator(settings) {
   }
 };
 
-},{"./lib/dragForce":19,"./lib/eulerIntegrator":20,"./lib/exposeProperties":21,"./lib/spring":22,"./lib/springForce":23,"ngraph.merge":17,"ngraph.quadtreebh":24}],19:[function(require,module,exports){
+},{"./lib/dragForce":20,"./lib/eulerIntegrator":21,"./lib/exposeProperties":22,"./lib/spring":23,"./lib/springForce":24,"ngraph.merge":18,"ngraph.quadtreebh":25}],20:[function(require,module,exports){
 /**
  * Represents drag force, which reduces force value on each step by given
  * coefficient.
@@ -2082,7 +1969,7 @@ module.exports = function (options) {
   return api;
 };
 
-},{"./exposeProperties":21,"ngraph.merge":17}],20:[function(require,module,exports){
+},{"./exposeProperties":22,"ngraph.merge":18}],21:[function(require,module,exports){
 /**
  * Performs forces integration, using given timestep. Uses Euler method to solve
  * differential equation (http://en.wikipedia.org/wiki/Euler_method ).
@@ -2126,7 +2013,7 @@ function integrate(bodies, timeStep) {
   return (tx * tx + ty * ty)/bodies.length;
 }
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 module.exports = exposeProperties;
 
 /**
@@ -2172,7 +2059,7 @@ function augment(source, target, key) {
   }
 }
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 module.exports = Spring;
 
 /**
@@ -2188,7 +2075,7 @@ function Spring(fromBody, toBody, length, coeff, weight) {
     this.weight = typeof weight === 'number' ? weight : 1;
 };
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 /**
  * Represents spring force, which updates forces acting on two bodies, conntected
  * by a spring.
@@ -2240,7 +2127,7 @@ module.exports = function (options) {
   return api;
 }
 
-},{"./exposeProperties":21,"ngraph.merge":17,"ngraph.random":28}],24:[function(require,module,exports){
+},{"./exposeProperties":22,"ngraph.merge":18,"ngraph.random":29}],25:[function(require,module,exports){
 /**
  * This is Barnes Hut simulation algorithm. Implementation
  * is adopted to non-recursive solution, since certain browsers
@@ -2514,7 +2401,7 @@ module.exports = function (options) {
 };
 
 
-},{"./insertStack":25,"./isSamePosition":26,"./node":27,"ngraph.random":28}],25:[function(require,module,exports){
+},{"./insertStack":26,"./isSamePosition":27,"./node":28,"ngraph.random":29}],26:[function(require,module,exports){
 module.exports = InsertStack;
 
 /**
@@ -2559,7 +2446,7 @@ function InsertStackElement(node, body) {
     this.body = body; // physical body which needs to be inserted to node
 }
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 module.exports = function isSamePosition(point1, point2) {
     var dx = Math.abs(point1.x - point2.x);
     var dy = Math.abs(point1.y - point2.y);
@@ -2567,7 +2454,7 @@ module.exports = function isSamePosition(point1, point2) {
     return (dx < 1e-8 && dy < 1e-8);
 };
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 /**
  * Internal data structure to represent 2D QuadTree node
  */
@@ -2599,9 +2486,9 @@ module.exports = function Node() {
   this.isInternal = false;
 };
 
-},{}],28:[function(require,module,exports){
-module.exports=require(14)
 },{}],29:[function(require,module,exports){
+module.exports=require(16)
+},{}],30:[function(require,module,exports){
 /**
  * This module unifies handling of mouse whee event accross different browsers
  *
@@ -2675,6 +2562,6 @@ function _addWheelListener( elem, eventName, callback, useCapture ) {
   }, useCapture || false );
 }
 
-},{}]},{},[1])
-(1)
+},{}]},{},[2])
+(2)
 });

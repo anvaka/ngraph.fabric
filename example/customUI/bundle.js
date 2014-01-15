@@ -1,17 +1,49 @@
 !function(e){if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.ngraph=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-// this is just a demo. To run it execute from the root of repository:
-//
-// > npm start
-//
-// Then open ./example/basic/index.html
-//
 module.exports.main = function () {
   var graph = require('ngraph.generators').grid(10, 10);
   var createFabric = require('../../');
   var fabricGraphics = createFabric(graph);
 
+  fabricGraphics.createNodeUI(function (node) {
+    return new fabric.Circle({ radius: Math.random() * 20, fill: getNiceColor() });
+  }).renderNode(function (circle) {
+    circle.left = circle.pos.x - circle.radius;
+    circle.top = circle.pos.y - circle.radius;
+  }).createLinkUI(function (link) {
+    // lines in fabric are odd... Maybe I don't understand them.
+    return new fabric.Line([0, 0, 0, 0], {
+      stroke: getNiceColor(),
+      originX: 'center',
+      originY: 'center'
+    });
+  }).renderLink(function (line) {
+    line.set({
+      x1: line.from.x,
+      y1: line.from.y,
+      x2: line.to.x,
+      y2: line.to.y
+    });
+  });
+
   // begin animation loop:
   fabricGraphics.run();
+}
+
+var niceColors = [
+ '#1f77b4', '#aec7e8',
+ '#ff7f0e', '#ffbb78',
+ '#2ca02c', '#98df8a',
+ '#d62728', '#ff9896',
+ '#9467bd', '#c5b0d5',
+ '#8c564b', '#c49c94',
+ '#e377c2', '#f7b6d2',
+ '#7f7f7f', '#c7c7c7',
+ '#bcbd22', '#dbdb8d',
+ '#17becf', '#9edae5'
+];
+
+function getNiceColor() {
+  return niceColors[(Math.random() * niceColors.length)|0];
 }
 
 },{"../../":2,"ngraph.generators":15}],2:[function(require,module,exports){
