@@ -16,6 +16,7 @@ module.exports.main = function () {
     if (!heyThere) return;
 
     var ui = fabricGraphics.getNodeUI(node.id);
+
     canvas.add(heyThere);
     heyThere.set({
       left: ui.left - 20,
@@ -25,9 +26,11 @@ module.exports.main = function () {
     isPlaying = true;
   }).on('mouseLeaveNode', function (node) {
     if (!isPlaying) return;
+
     heyThere.stop();
     canvas.remove(heyThere);
-  })
+  });
+
   // begin animation loop:
   fabricGraphics.run();
-}
+};

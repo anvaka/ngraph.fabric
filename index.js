@@ -58,7 +58,7 @@ module.exports = function (graph, settings){
         dx: dx,
         dy: dy
       };
-    }
+    },
 
     /**
      * Zooms to a point cx, cy (in canvas coordinates) with given scale level
@@ -87,6 +87,100 @@ module.exports = function (graph, settings){
      */
     getNodeUI : function (nodeId) {
       return nodeUI[nodeId];
+    },
+
+    getLinkUI: function (linkId) {
+      return linkUI[linkId];
+    },
+
+    /**
+     * This callback creates new UI for a graph node. This becomes helpful
+     * when you want to precalculate some properties, which otherwise could be
+     * expensive during rendering frame.
+     *
+     * @callback createNodeUICallback
+     * @param {object} node - graph node for which UI is required.
+     * @returns {object} arbitrary object which will be later passed to renderNode
+     */
+    /**
+     * This function allows clients to pass custon node UI creation callback
+     * 
+     * @param {createNodeUICallback} createNodeUICallback - The callback that 
+     * creates new node UI
+     * @returns {object} this for chaining.
+     */
+    createNodeUI : function (createNodeUICallback) {
+      nodeUI = {};
+      nodeUIBuilder = createNodeUICallback;
+      rebuildUI();
+      return this;
+    },
+
+    /**
+     * This callback is called by pixiGraphics when it wants to render node on
+     * a screen.
+     *
+     * @callback renderNodeCallback
+     * @param {object} node - result of createNodeUICallback(). It contains anything
+     * you'd need to render a node
+     * @param {PIXI.Graphics} ctx - PIXI's rendering context.
+     */
+    /**
+     * Allows clients to pass custom node rendering callback
+     *
+     * @param {renderNodeCallback} renderNodeCallback - Callback which renders
+     * node.
+     *
+     * @returns {object} this for chaining.
+     */
+    renderNode: function (renderNodeCallback) {
+      nodeRenderer = renderNodeCallback;
+      return this;
+    },
+
+    /**
+     * This callback creates new UI for a graph link. This becomes helpful
+     * when you want to precalculate some properties, which otherwise could be
+     * expensive during rendering frame.
+     *
+     * @callback createLinkUICallback
+     * @param {object} link - graph link for which UI is required.
+     * @returns {object} arbitrary object which will be later passed to renderNode
+     */
+    /**
+     * This function allows clients to pass custon node UI creation callback
+     * 
+     * @param {createLinkUICallback} createLinkUICallback - The callback that
+     * creates new link UI
+     * @returns {object} this for chaining.
+     */
+    createLinkUI : function (createLinkUICallback) {
+      linkUI = {};
+      linkUIBuilder = createLinkUICallback;
+      rebuildUI();
+      return this;
+    },
+
+    /**
+     * This callback is called by pixiGraphics when it wants to render link on
+     * a screen.
+     *
+     * @callback renderLinkCallback
+     * @param {object} link - result of createLinkUICallback(). It contains anything
+     * you'd need to render a link
+     * @param {PIXI.Graphics} ctx - PIXI's rendering context.
+     */
+    /**
+     * Allows clients to pass custom link rendering callback
+     *
+     * @param {renderLinkCallback} renderLinkCallback - Callback which renders
+     * link.
+     *
+     * @returns {object} this for chaining.
+     */
+    renderLink: function (renderLinkCallback) {
+      linkRenderer = renderLinkCallback;
+      return this;
     }
   };
 
@@ -126,11 +220,11 @@ module.exports = function (graph, settings){
     Object.keys(nodeUI).forEach(renderNode);
 
     // Fabric does not repsect transforms when it clears context; Doing it ourselves:
-    clear(canvas.contextContainer);
+    clearContext(canvas.contextContainer);
     canvas.renderAll();
   }
 
-  function clear(ctx) {
+  function clearContext(ctx) {
     ctx.save();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     canvas.clearContext(ctx);
@@ -165,6 +259,13 @@ module.exports = function (graph, settings){
 
     linkUI[link.id] = ui;
     canvas.add(ui);
+  }
+
+  function rebuildUI() {
+    // fabric does not have fast method to clear scene. This is a dirty hack:
+    canvas.getObjects().length = 0;
+    graph.forEachLink(initLink);
+    graph.forEachNode(initNode);
   }
 
   function listenToInputEvents(container) {
