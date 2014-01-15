@@ -50,6 +50,17 @@ module.exports = function (graph, settings){
     },
 
     /**
+     * Gets current transforms applied to canvas
+     */
+    getTransform: function () {
+      return {
+        scale: scale,
+        dx: dx,
+        dy: dy
+      };
+    }
+
+    /**
      * Zooms to a point cx, cy (in canvas coordinates) with given scale level
      */
     zoom: function (cx, cy, newScale) {
