@@ -5,7 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node_modules/.bin/browserify -s ngraph ./example/basic/index.js > ./example/basic/bundle.js"
+    "basic": "browserify -s ngraph ./example/basic/index.js > ./example/basic/bundle.js",
+    "customUI": "browserify -s ngraph ./example/customUI/index.js > ./example/customUI/bundle.js",
+    "dynamic": "browserify -s ngraph ./example/dynamic/index.js > ./example/dynamic/bundle.js",
+    "interactive": "browserify -s ngraph ./example/interactive/index.js > ./example/interactive/bundle.js",
+    "start": "npm run basic && npm run customUI && npm run dynamic && npm run interactive "
   },
   "keywords": [
     "ngraph",
