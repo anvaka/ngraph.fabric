@@ -27,6 +27,25 @@ Use mouse wheel to zoom in/zoom out, drag canvas/nodes with left mouse button. M
 * [Add/remove graph's elements dynamically](http://anvaka.github.io/ngraph.fabric/example/dynamic/)
 * [Hover mouse over a node to get a wave](http://anvaka.github.io/ngraph.fabric/example/interactive/)
 
+# Customization
+
+There are many ways to customize fabric graphics. I made them symmetrical to `ngraph.pixi` graphics. See [README](https://github.com/anvaka/ngraph.pixi#customization)) for more details.
+
+# What is missing?
+
+This library was created as part of [ngraph](https://github.com/anvaka/ngraph)
+project. If you like fabric.js and want to help with graph rendering, your 
+contribution is absolutely welcomed and appreciated.
+
+If you know how to improve rendering speed with `fabric.js` please let me know.
+Currently it does not handle well graphs with more than 500 node and 1000 links.
+
+# Why fabric?
+Fabric has very well [documented API](http://fabricjs.com/) and you can use any of those primitives in as
+your rendering tools. What makes it absolutely awesome - same code can be executed
+in the browser and on the server, using `node.js`. Thus you can reuse code to render
+static images of graphs or animate them in the browser.
+
 # install
 
 With [npm](https://npmjs.org) do:
