@@ -1,6 +1,6 @@
 # ngraph.fabric
 
-This is a 2d graph renderer, which uses [Fabric.js](https://github.com/kangax/fabric.js) as a rendering engine.
+This is a 2d graph renderer, which uses [Fabric.js](https://github.com/kangax/fabric.js) as a rendering engine. This library is a part of [ngraph](https://github.com/anvaka/ngraph) project. 
 [![rendered from node.js](example/node.js/outGraph.png)](http://anvaka.github.io/ngraph.fabric/example/customUI/)
 
 NB: Image above was [rendered from Node.js](https://github.com/anvaka/ngraph.fabric/blob/master/example/node.js/innode.js). Click on the image to see interactive version rendered by the same code in your browser.
@@ -33,8 +33,7 @@ There are many ways to customize fabric graphics. I made them symmetrical to `ng
 
 # What is missing?
 
-This library was created as part of [ngraph](https://github.com/anvaka/ngraph)
-project. If you like fabric.js and want to help with graph rendering, your 
+If you like fabric.js and want to help with graph rendering, your 
 contribution is absolutely welcomed and appreciated.
 
 If you know how to improve rendering speed with `fabric.js` please let me know.
