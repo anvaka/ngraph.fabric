@@ -20,7 +20,7 @@ This code will render interactive graph:
   fabricGraphics.run();
 ```
 
-Use mouse wheel to zoom in/zoom out, drag canvas/nodes with left mouse button. More examples are available in the `exmples` folder. You can also play with browserified examples here:
+Use mouse wheel to zoom in/zoom out, drag canvas/nodes with left mouse button. More examples are available in the [examples](examples) folder. You can also play with browserified examples here:
 
 * [Default UI rendering](http://anvaka.github.io/ngraph.fabric/example/basic/)
 * [Custom look and feel for nodes and links](http://anvaka.github.io/ngraph.fabric/example/customUI/)
@@ -29,7 +29,7 @@ Use mouse wheel to zoom in/zoom out, drag canvas/nodes with left mouse button. M
 
 # Customization
 
-There are many ways to customize fabric graphics. I made them symmetrical to `ngraph.pixi` graphics. See [README](https://github.com/anvaka/ngraph.pixi#customization)) for more details.
+There are many ways to customize fabric graphics. I made them symmetrical to `ngraph.pixi` graphics. See [README](https://github.com/anvaka/ngraph.pixi#customization) for more details.
 
 # What is missing?
 
@@ -41,9 +41,9 @@ If you know how to improve rendering speed with `fabric.js` please let me know.
 Currently it does not handle well graphs with more than 500 node and 1000 links.
 
 # Why fabric?
-Fabric has very well [documented API](http://fabricjs.com/) and you can use any of those primitives in as
-your rendering tools. What makes it absolutely awesome - same code can be executed
-in the browser and on the server, using `node.js`. Thus you can reuse code to render
+Fabric has very well [documented API](http://fabricjs.com/) and you can use any of those primitives as
+your rendering tools. What makes it absolutely awesome: Same code can be executed
+in the browser and on the server using `node.js`. Thus you can reuse code to render
 static images of graphs or animate them in the browser.
 
 # install
