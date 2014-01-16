@@ -35,7 +35,7 @@ function renderToCanvas(graph, layout) {
 
   var scale = 1;
   fabricGraphics.setTransform(size/2, size/2, scale);
-  fabricGraphics.renderOneFrame(); // One frame is enought
+  fabricGraphics.renderOneFrame(); // One frame is enough
 
   return fabricGraphics.canvas;
 }
