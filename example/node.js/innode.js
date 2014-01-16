@@ -1,41 +1,54 @@
-// This simple file will render graph into an image
-  var graph = require('ngraph.generators').grid(40, 40);
+// This example renders graph into an image
+var graph = require('ngraph.generators').grid(10, 10);
 
+// Perform 500 iterations of graph layout:
+var layout = layoutGraph(graph, 500);
+
+// Ask fabric to render graph with given layout into a canvas
+var canvas = renderToCanvas(graph, layout);
+
+// And finally save it to a file
+saveCanvasToFile(canvas, 'outGraph.png');
+
+function layoutGraph(graph, iterationsCount) {
   // we are going to use our own layout:
   var layout = require('ngraph.forcelayout')(graph);
   console.log('Running layout...');
-  for (var i = 0; i < 500; ++i) {
+  for (var i = 0; i < iterationsCount; ++i) {
     layout.step();
   }
   console.log('Done. Rendering graph...');
+  return layout;
+}
 
-  var createFabric = require('../../');
+function renderToCanvas(graph, layout) {
   var graphRect = layout.getGraphRect();
-  var size = Math.max(graphRect.x2 - graphRect.x1, graphRect.y2 - graphRect.y1) + 100;
-  var fabricGraphics = createFabric(graph, {
-    width: size,
-    height: size,
-    layout: layout
-  });
+  var size = Math.max(graphRect.x2 - graphRect.x1, graphRect.y2 - graphRect.y1) + 200;
 
+  var createFabricGraphics = require('../../');
+  var fabricGraphics = createFabricGraphics(graph, { width: size, height: size, layout: layout });
   var fabric = require('fabric').fabric;
-  fabricGraphics.createNodeUI(function (node) {
-    return new fabric.Circle({ radius: Math.random() * 20, fill: 'gray' });
-  }).renderNode(function (circle) {
-    circle.left = circle.pos.x - circle.radius;
-    circle.top = circle.pos.y - circle.radius;
-  });
+
+  // This line customize appearance of each node and link. The best part of it -
+  // it is the same code which renders graph in `customUI` example
+  require('../shared/uiSettings')(fabricGraphics, fabric);
+
   var scale = 1;
-
   fabricGraphics.setTransform(size/2, size/2, scale);
-  fabricGraphics.renderOneFrame();
+  fabricGraphics.renderOneFrame(); // One frame is enought
 
-  console.log('Done. Saving to file');
+  return fabricGraphics.canvas;
+}
 
+function saveCanvasToFile(canvas, fileName) {
   var fs = require('fs');
-  var out = fs.createWriteStream(__dirname + '/helloworld.png');
-  var canvas = fabricGraphics.canvas;
-  var stream = canvas.createPNGStream();
-  stream.on('data', function(chunk) {
-    out.write(chunk);
+  var path = require('path');
+  var fullName = path.join(__dirname, fileName);
+  var outFile = fs.createWriteStream(fullName);
+
+  canvas.createPNGStream().on('data', function(chunk) {
+    outFile.write(chunk);
+  }).on('end', function () {
+    console.log('Graph saved to: ' + fullName);
   });
+}
