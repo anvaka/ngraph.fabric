@@ -1,6 +1,6 @@
 {
   "name": "ngraph.fabric",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Fabric.js graph renderer",
   "main": "index.js",
   "scripts": {
@@ -24,12 +24,12 @@
     "url": "https://github.com/anvaka/ngraph.fabric"
   },
   "dependencies": {
-    "fabric": "~1.4.1",
     "ngraph.merge": "0.0.1",
     "ngraph.forcelayout": "0.0.7",
     "ngraph.physics.simulator": "0.0.5",
     "wheel": "0.0.0",
     "ngraph.events": "0.0.1",
+    "fabric": "~1.4.2",
     "canvas": "~1.1.3"
   },
   "devDependencies": {
