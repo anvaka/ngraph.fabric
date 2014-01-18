@@ -119,13 +119,12 @@ module.exports = function (graph, settings){
     },
 
     /**
-     * This callback is called by pixiGraphics when it wants to render node on
+     * This callback is called by graphics when it wants to render node on
      * a screen.
      *
      * @callback renderNodeCallback
      * @param {object} node - result of createNodeUICallback(). It contains anything
      * you'd need to render a node
-     * @param {PIXI.Graphics} ctx - PIXI's rendering context.
      */
     /**
      * Allows clients to pass custom node rendering callback
@@ -164,13 +163,12 @@ module.exports = function (graph, settings){
     },
 
     /**
-     * This callback is called by pixiGraphics when it wants to render link on
+     * This callback is called by graphics when it wants to render link on
      * a screen.
      *
      * @callback renderLinkCallback
      * @param {object} link - result of createLinkUICallback(). It contains anything
      * you'd need to render a link
-     * @param {PIXI.Graphics} ctx - PIXI's rendering context.
      */
     /**
      * Allows clients to pass custom link rendering callback
