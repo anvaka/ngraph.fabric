@@ -1,4 +1,4 @@
-# ngraph.fabric
+# ngraph.fabric [![Build Status](https://travis-ci.org/anvaka/ngraph.fabric.png?branch=master)](https://travis-ci.org/anvaka/ngraph.fabric)
 
 This is a 2d graph renderer, which uses [Fabric.js](https://github.com/kangax/fabric.js) as a rendering engine. This library is a part of [ngraph](https://github.com/anvaka/ngraph) project. 
 [![rendered from node.js](https://github.com/anvaka/ngraph.fabric/raw/master/example/node.js/outGraph.png)](http://anvaka.github.io/ngraph.fabric/example/customUI/)
