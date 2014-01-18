@@ -4,7 +4,7 @@
   "description": "Fabric.js graph renderer",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "tap test/*.js",
     "basic": "browserify -s ngraph ./example/basic/index.js > ./example/basic/bundle.js",
     "customUI": "browserify -s ngraph ./example/customUI/index.js > ./example/customUI/bundle.js",
     "dynamic": "browserify -s ngraph ./example/dynamic/index.js > ./example/dynamic/bundle.js",
@@ -35,7 +35,8 @@
   "devDependencies": {
     "browserify": "~3.20.0",
     "ngraph.generators": "0.0.2",
-    "ngraph.graph": "0.0.2"
+    "ngraph.graph": "0.0.2",
+    "tap": "~0.4.8"
   },
   "browser": {
     "fabric": false,
