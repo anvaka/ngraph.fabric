@@ -4,7 +4,7 @@
   "description": "Fabric.js graph renderer",
   "main": "index.js",
   "scripts": {
-    "test": "node test/index.js",
+    "test": "tap test/*.js",
     "basic": "browserify -s ngraph ./example/basic/index.js > ./example/basic/bundle.js",
     "customUI": "browserify -s ngraph ./example/customUI/index.js > ./example/customUI/bundle.js",
     "dynamic": "browserify -s ngraph ./example/dynamic/index.js > ./example/dynamic/bundle.js",
@@ -29,7 +29,7 @@
     "ngraph.physics.simulator": "0.0.5",
     "wheel": "0.0.0",
     "ngraph.events": "0.0.1",
-    "fabric": "~1.4.2",
+    "fabric": "~1.4.1",
     "canvas": "~1.1.3"
   },
   "devDependencies": {
