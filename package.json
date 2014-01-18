@@ -4,6 +4,7 @@
   "description": "Fabric.js graph renderer",
   "main": "index.js",
   "scripts": {
+    "test": "NODE_DEBUG=module node test/index.js",
     "basic": "browserify -s ngraph ./example/basic/index.js > ./example/basic/bundle.js",
     "customUI": "browserify -s ngraph ./example/customUI/index.js > ./example/customUI/bundle.js",
     "dynamic": "browserify -s ngraph ./example/dynamic/index.js > ./example/dynamic/bundle.js",
