@@ -1,7 +1,7 @@
 # ngraph.fabric
 
 This is a 2d graph renderer, which uses [Fabric.js](https://github.com/kangax/fabric.js) as a rendering engine. This library is a part of [ngraph](https://github.com/anvaka/ngraph) project. 
-[![rendered from node.js](example/node.js/outGraph.png)](http://anvaka.github.io/ngraph.fabric/example/customUI/)
+[![rendered from node.js](https://github.com/anvaka/ngraph.fabric/raw/master/example/node.js/outGraph.png)](http://anvaka.github.io/ngraph.fabric/example/customUI/)
 
 NB: Image above was [rendered from Node.js](https://github.com/anvaka/ngraph.fabric/blob/master/example/node.js/innode.js). Click on the image to see interactive version rendered by the same code in your browser.
 
