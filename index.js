@@ -105,8 +105,8 @@ module.exports = function (graph, settings){
      */
     /**
      * This function allows clients to pass custon node UI creation callback
-     * 
-     * @param {createNodeUICallback} createNodeUICallback - The callback that 
+     *
+     * @param {createNodeUICallback} createNodeUICallback - The callback that
      * creates new node UI
      * @returns {object} this for chaining.
      */
@@ -150,7 +150,7 @@ module.exports = function (graph, settings){
      */
     /**
      * This function allows clients to pass custon node UI creation callback
-     * 
+     *
      * @param {createLinkUICallback} createLinkUICallback - The callback that
      * creates new link UI
      * @returns {object} this for chaining.
@@ -288,7 +288,7 @@ module.exports = function (graph, settings){
       prevX = e.clientX;
       prevY = e.clientY;
 
-      var pos = getLocalPosition(e.clientX, e.clientY);
+      var pos = getLocalPosition(e.layerX, e.layerY);
       nodeUnderCursor = getNodeAt(pos.x, pos.y);
       if (nodeUnderCursor) {
         layout.pinNode(nodeUnderCursor, true);
@@ -306,7 +306,7 @@ module.exports = function (graph, settings){
     }
 
     function handleMouseMove(e) {
-      var pos = getLocalPosition(e.clientX, e.clientY);
+      var pos = getLocalPosition(e.layerX, e.layerY);
       if (!isDragging) {
         var node  = getNodeAt(pos.x, pos.y);
         if (lastOver && lastOver != node) {
