@@ -37,15 +37,15 @@ test('Transform', function (t) {
     // now let's scale into center of a canvas:
     graphics.zoom(0, 0, 2);
 
-    // since we scaled to center of a cnavs, it should still return 0, 0:
+    // since we scaled to center of a canvas, it should still return 0, 0:
     var scaled = graphics.getLocalPosition(width/2, height/2);
     t.equal(scaled.x, 0, 'X at 0');
     t.equal(scaled.y, 0, 'Y at 0');
 
     var topLeft = graphics.getLocalPosition(0, 0);
-    // we scaled by factor of two ito middle of the canvas, everything become
-    // bigger, and top left was moved way out of visible aread, so it should be
-    // twise as small as original position:
+    // we scaled by factor of two into middle of the canvas, everything become
+    // bigger, and top left was moved way out of visible area, so it should be
+    // twice as small as original position:
     t.equal(topLeft.x, -width/4, 'Left has moved proportionally');
     t.equal(topLeft.y, -height/4, 'Top has moved proportionally');
 

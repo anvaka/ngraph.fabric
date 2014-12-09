@@ -3,7 +3,7 @@ module.exports = function (graph, settings){
   var fabric = require('./lib/fabric');
 
   settings = merge(settings, {
-    // canvasId: "id", // identifier of dom element which sould be used as a container
+    // canvasId: "id", // identifier of dom element which should be used as a container
     // container: DomElement, // DOM element where you want to attach generated canvas
     // Default physics engine settings
       physics: {
@@ -30,7 +30,7 @@ module.exports = function (graph, settings){
   var nodeUIBuilder, nodeRenderer, linkUIBuilder, linkRenderer;
 
   var nodeUI, linkUI; // Storage for UI of nodes/links
-  var getNodeAt; // node lookup by cooridnates
+  var getNodeAt; // node lookup by coordinates
 
   // Public API:
   var graphics = {
@@ -104,9 +104,9 @@ module.exports = function (graph, settings){
      * @returns {object} arbitrary object which will be later passed to renderNode
      */
     /**
-     * This function allows clients to pass custon node UI creation callback
-     * 
-     * @param {createNodeUICallback} createNodeUICallback - The callback that 
+     * This function allows clients to pass custom node UI creation callback
+     *
+     * @param {createNodeUICallback} createNodeUICallback - The callback that
      * creates new node UI
      * @returns {object} this for chaining.
      */
@@ -149,8 +149,8 @@ module.exports = function (graph, settings){
      * @returns {object} arbitrary object which will be later passed to renderNode
      */
     /**
-     * This function allows clients to pass custon node UI creation callback
-     * 
+     * This function allows clients to pass custom node UI creation callback
+     *
      * @param {createLinkUICallback} createLinkUICallback - The callback that
      * creates new link UI
      * @returns {object} this for chaining.
@@ -195,11 +195,11 @@ module.exports = function (graph, settings){
 ///////////////////////////////////////////////////////////////////////////////
 
   function initialize() {
-    nodeUIBuilder = defaults.createNodeUI,
-    nodeRenderer  = defaults.nodeRenderer,
-    linkUIBuilder = defaults.createLinkUI,
+    nodeUIBuilder = defaults.createNodeUI;
+    nodeRenderer  = defaults.nodeRenderer;
+    linkUIBuilder = defaults.createLinkUI;
     linkRenderer  = defaults.linkRenderer;
-    nodeUI = {}, linkUI = {}; // Storage for UI of nodes/links
+    nodeUI = {}; linkUI = {}; // Storage for UI of nodes/links
 
     getNodeAt = require('./lib/spatialIndex')(graph, nodeUI);
 
@@ -307,8 +307,9 @@ module.exports = function (graph, settings){
 
     function handleMouseMove(e) {
       var pos = getLocalPosition(e.clientX, e.clientY);
+      var node;
       if (!isDragging) {
-        var node  = getNodeAt(pos.x, pos.y);
+        node  = getNodeAt(pos.x, pos.y);
         if (lastOver && lastOver != node) {
           graphics.fire('mouseLeaveNode', lastOver);
           lastOver = node;
@@ -390,4 +391,4 @@ module.exports = function (graph, settings){
       }
     }
   }
-}
+};
