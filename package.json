@@ -1,6 +1,6 @@
 {
   "name": "ngraph.fabric",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Fabric.js graph renderer",
   "main": "index.js",
   "scripts": {
