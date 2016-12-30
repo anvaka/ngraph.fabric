@@ -363,8 +363,7 @@ module.exports = function (graph, settings){
       return settings.layout; // user has its own layout algorithm. Use it;
     }
     // otherwise let's create a default force directed layout:
-    var physics = require('ngraph.physics.simulator');
-    return require('ngraph.forcelayout')(graph, physics(settings.physics));
+    return require('ngraph.forcelayout')(graph, settings.physics);
   }
 
   function onGraphChanged(changes) {
