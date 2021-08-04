@@ -24,8 +24,8 @@
     "url": "https://github.com/anvaka/ngraph.fabric"
   },
   "dependencies": {
-    "canvas": "^1.6.2",
-    "fabric": "^1.7.2",
+    "canvas": "^2.8.0",
+    "fabric": "^4.5.1",
     "ngraph.events": "0.0.4",
     "ngraph.forcelayout": "0.1.2",
     "ngraph.merge": "0.0.1",
